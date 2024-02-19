@@ -17,23 +17,32 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app1.views import CountryListCreateAPIView, CountryDetailAPIView, \
-    ManufacturerListCreateAPIView, ManufacturerDetailAPIView, \
-    CarListCreateAPIView, CarDetailAPIView, \
-    CommentListCreateAPIView, CommentDetailAPIView, ExportDataAPIView
+from app1.views import CountryListAPIView, CountryCreateAPIView, CountryUpdateAPIView, CountryDestroyAPIView, \
+    ManufacturerListAPIView, ManufacturerCreateAPIView, ManufacturerUpdateAPIView, ManufacturerDestroyAPIView,\
+    CarListAPIView, CarCreateAPIView, CarUpdateAPIView, CarDestroyAPIView, \
+    CommentListAPIView, CommentCreateAPIView, CommentUpdateAPIView, CommentDestroyAPIView, \
+    ExportData
 
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('export-data/', ExportDataAPIView, name='export_data'),
-    path('countries/', CountryListCreateAPIView.as_view(), name='country-list'),
-    path('countries/<int:pk>/', CountryDetailAPIView.as_view(), name='country-detail'),
-    path('manufacturers/', ManufacturerListCreateAPIView.as_view(), name='manufacturer-list'),
-    path('manufacturers/<int:pk>/', ManufacturerDetailAPIView.as_view(), name='manufacturer-detail'),
-    path('cars/', CarListCreateAPIView.as_view(), name='car-list'),
-    path('cars/<int:pk>/', CarDetailAPIView.as_view(), name='car-detail'),
-    path('comments/', CommentListCreateAPIView.as_view(), name='comment-list'),
-    path('comments/<int:pk>/', CommentDetailAPIView.as_view(), name='comment-detail'),
+    path('export-data/', ExportData, name='export-data'),
+    path('countries/', CountryListAPIView.as_view(), name='country-list'),
+    path('countries/create', CountryCreateAPIView.as_view(), name='country-create'),
+    path('countries/update', CountryUpdateAPIView.as_view(), name='country-update'),
+    path('countries/destroy', CountryDestroyAPIView.as_view(), name='country-destroy'),
+    path('manufacturers/', ManufacturerListAPIView.as_view(), name='manufacturer-list'),
+    path('manufacturers/create', ManufacturerCreateAPIView.as_view(), name='manufacturer-create'),
+    path('manufacturers/update', ManufacturerUpdateAPIView.as_view(), name='manufacturer-update'),
+    path('manufacturers/destroy', ManufacturerDestroyAPIView.as_view(), name='manufacturer-destroy'),
+    path('cars/', CarListAPIView.as_view(), name='car-list'),
+    path('cars/create', CarCreateAPIView.as_view(), name='car-create'),
+    path('cars/update', CarUpdateAPIView.as_view(), name='car-update'),
+    path('cars/destroy', CarDestroyAPIView.as_view(), name='car-destroy'),
+    path('comments/', CommentListAPIView.as_view(), name='comment-list'),
+    path('comments/create', CommentCreateAPIView.as_view(), name='comment-create'),
+    path('comments/update', CommentUpdateAPIView.as_view(), name='comment-update'),
+    path('comments/destroy', CommentDestroyAPIView.as_view(), name='comment-destroy'),
 ]

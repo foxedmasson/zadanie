@@ -2,96 +2,133 @@ from django.shortcuts import render
 import pandas as pd
 from django.http import HttpResponse
 from rest_framework import generics, permissions
+from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from .models import Country, Manufacturer, Car, Comment
 from .serializers import CountrySerializer, ManufacturerSerializer, CarSerializer, CommentSerializer
 
 
 #Логика к выгрузке в форматах
-class ExportDataAPIView:
-    queryset = None
-    serializer_class = None
+def ExportData(request):
+    format = request.GET.get('format', 'xlsx')  # Получаем параметр format из запроса (по умолчанию xlsx)
 
-    def get(self, request, *args, **kwargs):
-        export_format = request.Get.get('format')
-        if export_format==('csv'):
-            return self.export_csv()
-        elif export_format==('xlsx'):
-            return self.export_xlsx()
-        else:
-            return HttpResponse("Неверный формат", status=400)
+    data = Country.objects.all()  # Получаем данные из базы данных
 
-    def get_queryset(self):
-        return self.queryset.all()
+    if format == 'xlsx':
+        # Создаем DataFrame из данных модели
+        df = pd.DataFrame(list(data.values()))
 
-    def get_serializer(self, queryset):
-        return self.serializer_class(queryset, many=True)
-    def export_csv(self):
-        data = self.get_queryset()
-        serializer = self.get_serializer(data)
-        csv_data = pd.DataFrame(serializer.data)
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="export.csv"'
-        csv_data.to_csv(response, index=False)
-        return response
-
-    def export_xlsx(self):
-        data = self.get_queryset()
-        serializer = self.get_serializer(data)
-        xlsx_data = pd.DataFrame(serializer.data)
+        # Создаем файл XLSX
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="export.xlsx"'
-        xlsx_data.to_excel(response, index=False)
+        response['Content-Disposition'] = 'attachment; filename="exported_data.xlsx"'
+        df.to_excel(response, index=False)
         return response
+    elif format == 'csv':
+        df = pd.DataFrame(list(data.values()))
+        # Создаем файл CSV
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
+        df.to_csv(response, index=False)
+        return response
+    else:
+        return HttpResponse('Invalid format parameter. Please specify "xlsx" or "csv".', status=400)
 
 
-
-#Эндпоинты
-class CountryListCreateAPIView(generics.ListCreateAPIView, ExportDataAPIView):
+#Эндпоинты страны
+class CountryListAPIView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-class CountryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class CountryCreateAPIView(generics.CreateAPIView ):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-class ManufacturerListCreateAPIView(generics.ListCreateAPIView, ExportDataAPIView):
+class CountryUpdateAPIView(generics.UpdateAPIView ):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+class CountryDestroyAPIView(generics.DestroyAPIView ):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+#Эндпоинты производителя
+class ManufacturerListAPIView(generics.ListAPIView):
+    queryset = Manufacturer.objects.all()
+    serializer_class = ManufacturerSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+class ManufacturerCreateAPIView(generics.CreateAPIView ):
+    queryset = Manufacturer.objects.all()
+    serializer_class = ManufacturerSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+class ManufacturerUpdateAPIView(generics.UpdateAPIView):
+    queryset = Manufacturer.objects.all()
+    serializer_class = ManufacturerSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+class ManufacturerDestroyAPIView(generics.DestroyAPIView):
     queryset = Manufacturer.objects.all()
     serializer_class = ManufacturerSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
-class ManufacturerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Manufacturer.objects.all()
-    serializer_class = ManufacturerSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-class CarListCreateAPIView(generics.ListCreateAPIView, ExportDataAPIView):
+#Эндпоинты машины
+class CarListAPIView(generics.ListAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-class CarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class CarCreateAPIView(generics.CreateAPIView):
     queryset = Car.objects.all()
     serializer_class = CarSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-class CommentListCreateAPIView(generics.ListCreateAPIView,ExportDataAPIView):
+class CarUpdateAPIView(generics.UpdateAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+class CarDestroyAPIView(generics.DestroyAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+
+#Эндпоинты коментария
+class CommentListAPIView(generics.ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.AllowAny]
 
+class CommentCreateAPIView(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
 
-class CommentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class CommentUpdateAPIView(generics.UpdateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+class CommentDestroyAPIView(generics.DestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     authentication_classes = [TokenAuthentication]
