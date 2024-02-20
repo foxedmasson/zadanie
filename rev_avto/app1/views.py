@@ -5,7 +5,8 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from .models import Country, Manufacturer, Car, Comment
-from .serializers import CountrySerializer, ManufacturerSerializer, CarSerializer, CommentSerializer
+from .serializers import CountrySerializer, ManufacturerSerializer, CarSerializer, CommentSerializer,\
+CountrySerializerForZ, ManufacturerSerializerForZ, CarSerializerForZ, CommentSerializerForZ
 
 
 #Логика к выгрузке в форматах
@@ -33,7 +34,23 @@ def ExportData(request):
     else:
         return HttpResponse('Invalid format parameter. Please specify "xlsx" or "csv".', status=400)
 
+#Эндпоинты для 4рех конкретных гет запросов.
+class CountryListView(generics.ListAPIView):
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializerForZ
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
+class ManufacturerListView(generics.ListAPIView):
+    queryset = Manufacturer.objects.all()
+    serializer_class = ManufacturerSerializerForZ
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+class CarListView(generics.ListAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializerForZ
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 #Эндпоинты страны
 class CountryListAPIView(generics.ListAPIView):
     queryset = Country.objects.all()
@@ -118,7 +135,7 @@ class CommentListAPIView(generics.ListAPIView):
 
 class CommentCreateAPIView(generics.CreateAPIView):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentSerializerForZ
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.AllowAny]
 
