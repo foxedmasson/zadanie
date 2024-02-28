@@ -18,13 +18,11 @@ from django.contrib import admin
 from django.urls import path
 
 from app1.views import CountryListAPIView, CountryCreateAPIView, CountryUpdateAPIView, CountryDestroyAPIView, \
-    ManufacturerListAPIView, ManufacturerCreateAPIView, ManufacturerUpdateAPIView, ManufacturerDestroyAPIView,\
+    ManufacturerListAPIView, ManufacturerCreateAPIView, ManufacturerUpdateAPIView, ManufacturerDestroyAPIView, \
     CarListAPIView, CarCreateAPIView, CarUpdateAPIView, CarDestroyAPIView, \
-    CommentListAPIView, CommentCreateAPIView, CommentUpdateAPIView, CommentDestroyAPIView,CountryListView, ManufacturerListView, \
+    CommentListAPIView, CommentCreateAPIView, CommentUpdateAPIView, CommentDestroyAPIView, CountryListView, \
+    ManufacturerListView, \
     CarListView, ExportData
-
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
