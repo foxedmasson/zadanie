@@ -1,10 +1,8 @@
-from django.shortcuts import render
+
 import pandas as pd
 from django.http import HttpResponse
 from rest_framework import viewsets
-from rest_framework import generics, permissions
-from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import  permissions
 from .models import Country, Manufacturer, Car, Comment
 from .serializers import CountrySerializer, ManufacturerSerializer, CarSerializer, CommentSerializer
 
@@ -51,142 +49,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve', 'create']:
+            # Разрешение AllowAny для просмотра и создания
+            permission_classes = [permissions.AllowAny]
+        else:
+            # Для остальных методов использовать IsAuthenticatedOrReadOnly
+            permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+        return [permission() for permission in permission_classes]
 
 
-#
-# # Эндпоинты для 4рех конкретных гет запросов.
-# class CountryListView(generics.ListAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializerForZ
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class ManufacturerListView(generics.ListAPIView):
-#     queryset = Manufacturer.objects.all()
-#     serializer_class = ManufacturerSerializerForZ
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CarListView(generics.ListAPIView):
-#     queryset = Car.objects.all()
-#     serializer_class = CarSerializerForZ
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# # Эндпоинты страны
-# class CountryListAPIView(generics.ListAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CountryCreateAPIView(generics.CreateAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CountryUpdateAPIView(generics.UpdateAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CountryDestroyAPIView(generics.DestroyAPIView):
-#     queryset = Country.objects.all()
-#     serializer_class = CountrySerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# # Эндпоинты производителя
-# class ManufacturerListAPIView(generics.ListAPIView):
-#     queryset = Manufacturer.objects.all()
-#     serializer_class = ManufacturerSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class ManufacturerCreateAPIView(generics.CreateAPIView):
-#     queryset = Manufacturer.objects.all()
-#     serializer_class = ManufacturerSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class ManufacturerUpdateAPIView(generics.UpdateAPIView):
-#     queryset = Manufacturer.objects.all()
-#     serializer_class = ManufacturerSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class ManufacturerDestroyAPIView(generics.DestroyAPIView):
-#     queryset = Manufacturer.objects.all()
-#     serializer_class = ManufacturerSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# # Эндпоинты машины
-# class CarListAPIView(generics.ListAPIView):
-#     queryset = Car.objects.all()
-#     serializer_class = CarSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CarCreateAPIView(generics.CreateAPIView):
-#     queryset = Car.objects.all()
-#     serializer_class = CarSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CarUpdateAPIView(generics.UpdateAPIView):
-#     queryset = Car.objects.all()
-#     serializer_class = CarSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CarDestroyAPIView(generics.DestroyAPIView):
-#     queryset = Car.objects.all()
-#     serializer_class = CarSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# # Эндпоинты коментария
-# class CommentListAPIView(generics.ListAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.AllowAny]
-#
-#
-# class CommentCreateAPIView(generics.CreateAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializerForZ
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.AllowAny]
-#
-#
-# class CommentUpdateAPIView(generics.UpdateAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#
-#
-# class CommentDestroyAPIView(generics.DestroyAPIView):
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
+
